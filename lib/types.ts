@@ -8,7 +8,7 @@ export type Party = {
     phone?: string;
     payment_instructions?: string;
 };
-export type Status = 'draft' | 'issued' | 'paid' | 'cancelled';
+export type Status = 'draft' | 'issued' | 'sent' | 'paid' | 'cancelled';
 export type Item = {
     id?: string;
     position?: number;

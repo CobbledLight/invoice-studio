@@ -20,8 +20,9 @@ let invoice=await call('studio_save_draft',[payload]);assert.equal(Number(invoic
 invoice=await call('studio_invoice_action',[invoice.id,'issue',{}]);assert.equal(invoice.number,'INV-2026-000001');
 assert.equal((await call('studio_invoice_action',[invoice.id,'issue',{}])).number,invoice.number);
 await assert.rejects(()=>call('studio_save_draft',[payload]),/Only drafts/);
+invoice=await call('studio_invoice_action',[invoice.id,'send',{}]);assert.equal(invoice.status,'sent');
 await call('studio_invoice_action',[invoice.id,'pay',{paid_on:'2026-01-03'}]);
-await assert.rejects(()=>call('studio_invoice_action',[invoice.id,'cancel',{reason:'Test'}]),/Only an issued/);
+await assert.rejects(()=>call('studio_invoice_action',[invoice.id,'cancel',{reason:'Test'}]),/Only an issued or sent/);
 await call('studio_invoice_action',[invoice.id,'unpay',{}]);
 await assert.rejects(()=>call('studio_invoice_action',[invoice.id,'cancel',{reason:''}]),/reason/);
 await call('studio_invoice_action',[invoice.id,'cancel',{reason:'Replaced'}]);

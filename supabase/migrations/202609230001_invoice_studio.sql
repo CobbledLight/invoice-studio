@@ -4,7 +4,7 @@ begin;
 create schema invoice_studio;
 revoke all on schema invoice_studio from public, anon, authenticated;
 create type invoice_studio.invoice_type as enum ('standard','advance');
-create type invoice_studio.invoice_status as enum ('draft','issued','paid','cancelled');
+create type invoice_studio.invoice_status as enum ('draft','issued','sent','paid','cancelled');
 create table invoice_studio.users (
  id uuid primary key references auth.users(id) on delete restrict,
  auth_subject uuid not null unique,
@@ -137,15 +137,18 @@ declare u uuid:=invoice_studio.owner_id();v invoice_studio.invoices;seq bigint;y
   y:=extract(year from v.issue_date)::integer;
   insert into invoice_studio.invoice_counters(user_id,type,year,last_value) values(u,v.type,y,1) on conflict(user_id,type,year) do update set last_value=invoice_studio.invoice_counters.last_value+1,updated_at=now() returning last_value into seq;
   update invoice_studio.invoices set status='issued',number_year=y,sequence_no=seq,number=(case when v.type='standard' then 'INV-' else 'ADV-' end)||y||'-'||lpad(seq::text,greatest(6,length(seq::text)),'0'),issued_at=now(),updated_at=now(),subtotal=(select sum(line_net) from invoice_studio.invoice_items l where l.invoice_id=v.id),tax_total=(select sum(line_tax) from invoice_studio.invoice_items l where l.invoice_id=v.id),total=(select sum(line_total) from invoice_studio.invoice_items l where l.invoice_id=v.id) where id=v.id;
+ elsif action='send' then
+  if v.status<>'issued' then raise exception 'Only an issued invoice can be sent.';end if;
+  update invoice_studio.invoices set status='sent',updated_at=now() where id=v.id;
  elsif action='pay' then
-  if v.status<>'issued' then raise exception 'Only an issued invoice can be marked paid.';end if;
+  if v.status<>'sent' then raise exception 'Only a sent invoice can be marked paid.';end if;
   d:=(payload->>'paid_on')::date;if d is null or d<v.issue_date or d>today then raise exception 'Payment date must be between issue date and today.';end if;
   update invoice_studio.invoices set status='paid',paid_on=d,updated_at=now() where id=v.id;
  elsif action='unpay' then
   if v.status<>'paid' then raise exception 'Only a paid invoice can be reopened.';end if;
-  update invoice_studio.invoices set status='issued',paid_on=null,updated_at=now() where id=v.id;
+    update invoice_studio.invoices set status='sent',paid_on=null,updated_at=now() where id=v.id;
  elsif action='cancel' then
-  if v.status<>'issued' then raise exception 'Only an issued invoice can be cancelled.';end if;
+    if v.status not in ('issued','sent') then raise exception 'Only an issued or sent invoice can be cancelled.';end if;
   if length(trim(coalesce(payload->>'reason','')))=0 then raise exception 'A cancellation reason is required.';end if;
   update invoice_studio.invoices set status='cancelled',cancelled_at=now(),cancellation_reason=trim(payload->>'reason'),updated_at=now() where id=v.id;
  elsif action='delete' then
