@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import type { Party } from '@/lib/types';
-export function Field({ label, value, onChange, type = 'text', required = false, full = false, min, max, step, placeholder, maxLength = 2000 }: {
+export function Field({ label, value, onChange, type = 'text', required = false, full = false, min, max, step, placeholder, maxLength = 2000, readOnly = false }: {
     label: string;
     value: string | number;
     onChange: (v: string) => void;
@@ -15,7 +15,8 @@ export function Field({ label, value, onChange, type = 'text', required = false,
     step?: string;
     placeholder?: string;
     maxLength?: number;
-}) { return <label className={`field ${full ? 'full' : ''}`}><span>{label}{required ? ' *' : ''}</span><Input value={value} onChange={e => onChange(e.target.value)} type={type} required={required} min={min} max={max} step={step} placeholder={placeholder} maxLength={maxLength}/></label>; }
+    readOnly?: boolean;
+}) { return <label className={`field ${full ? 'full' : ''}`}><span>{label}{required ? ' *' : ''}</span><Input value={value} onChange={e => onChange(e.target.value)} type={type} required={required} min={min} max={max} step={step} placeholder={placeholder} maxLength={maxLength} readOnly={readOnly}/></label>; }
 export function TextField({ label, value, onChange, full = false, maxLength = 2000 }: {
     label: string;
     value: string;
