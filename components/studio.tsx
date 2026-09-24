@@ -26,15 +26,30 @@ export default function Studio() {
     const dataRef = useRef(data);
     dataRef.current = data;
     const selectedInvoice = data?.invoices.find(i => i.id === selected);
-    useEffect(() => { setRecovery(new URLSearchParams(location.search).get('recovery') === '1'); if (!supabase) {
+    useEffect(() => { const params = new URLSearchParams(location.search); setRecovery(params.get('recovery') === '1'); if (!supabase) {
         setAuthReady(true);
         return;
-    } let active = true; supabase.auth.getSession().then(({ data, error }) => { if (active) {
-        setSession(data.session);
-        setAuthReady(true);
-        if (error)
-            setError(error.message);
-    } }); const { data: sub } = supabase.auth.onAuthStateChange((event, s) => { if (active) {
+    } const client = supabase; let active = true; const finishAuth = async () => { try {
+        let result;
+        const code = params.get('code');
+        if (code) {
+            result = await client.auth.exchangeCodeForSession(code);
+            history.replaceState(null, '', location.pathname);
+        }
+        const current = await client.auth.getSession();
+        if (active) {
+            setSession(current.data.session);
+            setAuthReady(true);
+            if (result?.error || current.error)
+                setError((result?.error || current.error)?.message || 'Unable to complete Google sign in.');
+        }
+    }
+    catch (e) {
+        if (active) {
+            setError(e instanceof Error ? e.message : 'Unable to complete Google sign in.');
+            setAuthReady(true);
+        }
+    } }; void finishAuth(); const { data: sub } = client.auth.onAuthStateChange((event, s) => { if (active) {
         setSession(s);
         setAuthReady(true);
         if (event === 'PASSWORD_RECOVERY')
