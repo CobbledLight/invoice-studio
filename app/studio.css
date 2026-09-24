@@ -42,12 +42,15 @@ body{font-family:Arial,Helvetica,sans-serif;background:#f7f9fb;color:#172b38;fon
 }
 @media(max-width:480px){
   .auth-wrap{display:flex;align-items:flex-start;justify-content:center;width:100%;max-width:100vw;min-height:100dvh;height:auto;box-sizing:border-box;padding:72px 12px 24px;overflow-x:hidden;overflow-y:auto}
-  .auth-card{display:block;width:100%;max-width:420px;min-width:0;box-sizing:border-box;padding:24px 16px;border-radius:12px;overflow:hidden}
+  .auth-card{display:block;width:calc(100vw - 24px);max-width:calc(100vw - 24px);min-width:0;box-sizing:border-box;padding:24px 16px;border-radius:12px;overflow:hidden;overflow-wrap:anywhere}
   .auth-card .brand{font-size:21px;padding-bottom:22px}
   .auth-card h1{font-size:25px;line-height:1.2;overflow-wrap:anywhere}
   .auth-card form{gap:15px}
   .auth-card form,.auth-card .field,.auth-card input,.auth-card textarea{min-width:0;max-width:100%;width:100%;box-sizing:border-box}
   .auth-card .primary,.auth-card .google-button{width:100%;max-width:100%;box-sizing:border-box}
+  .auth-card *{min-width:0;max-width:100%;overflow-wrap:anywhere}
+  .auth-card .brand-icon{flex:0 0 auto}
+  .auth-card .google-button span{min-width:0;white-space:normal;text-align:center}
   .google-button{margin-bottom:14px}
   .auth-links{justify-content:space-between;font-size:12px}
 }
