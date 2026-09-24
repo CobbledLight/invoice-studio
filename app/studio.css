@@ -40,3 +40,13 @@ body{font-family:Arial,Helvetica,sans-serif;background:#f7f9fb;color:#172b38;fon
   .locale-switcher{width:92px;height:34px;top:18px;right:12px;padding:2px}
   .locale-switcher button{height:28px;padding:0 5px}
 }
+@media(max-width:480px){
+  .auth-wrap{min-height:100dvh;place-items:start center;padding:72px 12px 24px;overflow-x:hidden}
+  .auth-card{width:100%;max-width:420px;padding:24px 16px;border-radius:12px}
+  .auth-card .brand{font-size:21px;padding-bottom:22px}
+  .auth-card h1{font-size:25px;line-height:1.2;overflow-wrap:anywhere}
+  .auth-card form{gap:15px}
+  .auth-card input{min-width:0;width:100%}
+  .google-button{margin-bottom:14px}
+  .auth-links{justify-content:space-between;font-size:12px}
+}
