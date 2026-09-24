@@ -284,11 +284,28 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const alignWithPrimary = () => {
       const switcher = document.querySelector<HTMLElement>('.locale-switcher');
-      const primary = document.querySelector<HTMLElement>('.page-heading .primary');
-      if (!switcher || !primary)
+      const heading = document.querySelector<HTMLElement>('.page-heading');
+      const primary = heading?.querySelector<HTMLElement>('.primary');
+      const status = heading?.querySelector<HTMLElement>('.status');
+      if (!switcher || !heading)
         return;
-      const right = window.scrollX + primary.getBoundingClientRect().right;
-      switcher.style.left = `${right - switcher.offsetWidth}px`;
+      const isPhone = window.matchMedia('(max-width: 767px)').matches;
+      const target = primary || status;
+      if (isPhone && !primary) {
+        // The editor has a Draft badge instead of a primary action. Put the
+        // language control below the heading so it cannot cover the title.
+        const rect = heading.getBoundingClientRect();
+        switcher.style.left = `${Math.max(12, window.innerWidth - switcher.offsetWidth - 14)}px`;
+        switcher.style.top = `${window.scrollY + rect.bottom + 8}px`;
+      } else if (target) {
+        const rect = target.getBoundingClientRect();
+        switcher.style.left = `${window.scrollX + rect.right - switcher.offsetWidth}px`;
+        switcher.style.top = `${window.scrollY + rect.top}px`;
+      } else {
+        const rect = heading.getBoundingClientRect();
+        switcher.style.left = `${Math.max(12, window.innerWidth - switcher.offsetWidth - 14)}px`;
+        switcher.style.top = `${window.scrollY + rect.top}px`;
+      }
       switcher.style.right = 'auto';
     };
     alignWithPrimary();

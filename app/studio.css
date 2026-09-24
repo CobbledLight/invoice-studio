@@ -37,4 +37,6 @@ body{font-family:Arial,Helvetica,sans-serif;background:#f7f9fb;color:#172b38;fon
   .auth-wrap{padding:16px}
   .auth-card{padding:26px 20px}
   .auth-links{gap:12px;flex-wrap:wrap}
+  .locale-switcher{width:92px;height:34px;top:18px;right:12px;padding:2px}
+  .locale-switcher button{height:28px;padding:0 5px}
 }
