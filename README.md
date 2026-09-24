@@ -40,6 +40,17 @@ The current project was connected using Igor's supplied project URL and public p
 4. Keep email confirmation enabled and create your account through the app. Confirm the email, then sign in.
 5. For public use, configure your own SMTP service in Supabase. Its default email service is limited and may restrict recipients or throttle signups.
 
+### Google login
+
+To enable the `Continue with Google` button:
+
+1. In Google Cloud Console, create an OAuth 2.0 Web application client.
+2. Add `https://YOUR_PROJECT.supabase.co/auth/v1/callback` as an authorized redirect URI.
+3. In Supabase, open Authentication -> Providers -> Google, enable it, and enter the Google client ID and secret.
+4. Keep the app URLs above in Supabase Authentication -> URL Configuration.
+
+Google login is separate from Gmail sending; this connection only authenticates the user with their Google account.
+
 Only the project URL and **publishable/anon** key belong in frontend environment settings. Never use a service-role key, secret key or database password. Public keys are bundled into the browser app by design. The database requires authenticated identity and authorizes every action.
 
 ## How the data is protected

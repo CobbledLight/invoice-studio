@@ -22,6 +22,8 @@ const translations: Record<string, string> = {
   "Create account": "Sukurti paskyrą",
   "Send reset link": "Siųsti atkūrimo nuorodą",
   "Sign in": "Prisijungti",
+  "Continue with Google": "Tęsti su Google",
+  "Google login is not enabled in Supabase yet. Enable the Google provider in Supabase Authentication settings, then try again.": "Prisijungimas per Google dar neįjungtas Supabase. Įjunkite Google teikėją Supabase autentifikavimo nustatymuose ir bandykite dar kartą.",
   "Create an account": "Sukurti paskyrą",
   "Back to sign in": "Grįžti į prisijungimą",
   "Forgot password?": "Pamiršote slaptažodį?",
